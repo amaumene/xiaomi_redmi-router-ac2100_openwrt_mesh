@@ -44,14 +44,14 @@ jobs:
       working-directory: /mnt/workdir
       run: |
         df -hT $PWD
-        curl -O https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-imagebuilder-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64.tar.xz
+        curl -O "https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-imagebuilder-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64.tar.xz"
         tar xvaf openwrt-imagebuilder-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64.tar.xz
         ln -sf /mnt/workdir/openwrt-imagebuilder-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64 $GITHUB_WORKSPACE/openwrt
  
     - name: Download version info
       run: |
-      curl -O https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/version.buildinfo
-      echo "::set-env name=OPENWRT_VERSION::$(cat version.buildinfo)"
+        curl -O "https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/version.buildinfo"
+        echo "::set-env name=OPENWRT_VERSION::$(cat version.buildinfo)"
       
     - name: Build the image
       id: image
@@ -73,9 +73,9 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        release_name: OpenWrt ${{ env.OPENWRT_COMMIT }}
+        release_name: OpenWrt ${{ env.OPENWRT_VERSION }}
         body: |
-          This release is based on ${{ env.OPENWRT_COMMIT }} OpenWrt
+          This release is based on ${{ env.OPENWRT_VERSION }} OpenWrt
         draft: false
         prerelease: false
 
