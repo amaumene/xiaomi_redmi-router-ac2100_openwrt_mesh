@@ -1,18 +1,8 @@
 name: Build OpenWrt
 
 on:
-  repository_dispatch:
-  release:
-    types: published
-  push:
-    branches:
-      - master
-    paths:
-      - 'build_trigger'
-#  schedule:
-#    - cron: 0 8 * * 5
-#  watch:
-#    types: started
+  schedule:
+    - cron: "0 21 * * *"
 
 env:
   BOARD: "ramips"
