@@ -2,7 +2,7 @@ name: Build OpenWrt
 
 on:
   schedule:
-    - cron: "45 06 * * *"
+    - cron: "0 7 * * *"
 
 env:
   BOARD: "ramips"
