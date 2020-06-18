@@ -18,7 +18,7 @@ env:
   BOARD: "ramips"
   SUBTARGET: "mt7621"
   PROFILE: "xiaomi_redmi-router-ac2100"
-  PACKAGES: "lua wpad-mesh-openssl iperf3 ethtool mtr -wpad-basic"
+  PACKAGES: "lua wpad-mesh-openssl iperf3 ethtool mtr libustream-openssl -wpad-basic"
 
 jobs:
   build:
@@ -73,7 +73,7 @@ jobs:
         tag_name: ${{ env.OPENWRT_VERSION }}
         release_name: OpenWrt ${{ env.OPENWRT_VERSION }}
         body: |
-          This release is based on ${{ env.OPENWRT_VERSION }} OpenWrt
+          This release is based on ${{ env.OPENWRT_VERSION }} OpenWrt build with these packages ${{ env.PACKAGES }} for ${{ env.PROFILE }} routers.
         draft: false
         prerelease: false
 
