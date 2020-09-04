@@ -2,13 +2,13 @@ name: Build OpenWrt
 
 on:
   schedule:
-    - cron: "0 22 * * *"
+    - cron: "05 03 * * *"
 
 env:
   BOARD: "ramips"
   SUBTARGET: "mt7621"
   PROFILE: "xiaomi_redmi-router-ac2100"
-  PACKAGES: "luci wpad-mesh-wolfssl iperf3 ethtool mtr iwinfo kmod-tcp-bbr libustream-wolfssl ca-bundle -wpad-basic-wolfssl luci-app-sqm"
+  PACKAGES: "luci wpad-mesh-openssl iperf3 ethtool mtr iwinfo kmod-tcp-bbr libustream-openssl ca-bundle -wpad-basic-wolfssl luci-app-sqm"
 
 jobs:
   build:
