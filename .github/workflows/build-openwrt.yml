@@ -3,6 +3,9 @@ name: Build OpenWrt
 on:
   schedule:
     - cron: "0 22 * * *"
+  push:
+    branches:
+      - master
 
 env:
   BOARD: "ramips"
