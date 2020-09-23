@@ -11,7 +11,7 @@ env:
   BOARD: "ramips"
   SUBTARGET: "mt7621"
   PROFILE: "xiaomi_redmi-router-ac2100"
-  PACKAGES: "luci wpad-mesh-wolfssl iperf3 ethtool mtr iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle luci-app-sqm luci-app-adblock -wpad-basic-wolfssl"
+  PACKAGES: "luci wpad-mesh-wolfssl iperf3 ethtool mtr iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -wpad-basic-wolfssl"
 
 jobs:
   build:
