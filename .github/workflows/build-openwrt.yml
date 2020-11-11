@@ -47,22 +47,16 @@ jobs:
         cd openwrt
         make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES }}"
 
-    - name: Organize files
-      id: organize
-      run: |
-        cd openwrt/bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}
-        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
-
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: $OPENWRT_VERSION
-        release_name: OpenWrt $OPENWRT_VERSION
+        tag_name: ${{ OPENWRT_VERSION }}
+        release_name: OpenWrt ${{ OPENWRT_VERSION }}
         body: |
-          This release is based on ${{ env.OPENWRT_VERSION }} OpenWrt build with these packages ${{ env.PACKAGES }} for ${{ env.PROFILE }} routers.
+          This release is based on ${{ OPENWRT_VERSION }} OpenWrt build with these packages ${{ env.PACKAGES }} for ${{ env.PROFILE }} router.
         draft: false
         prerelease: false
 
@@ -73,6 +67,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: $FIRMWARE/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
+        asset_path: openwrt/bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
         asset_name: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
         asset_content_type: application/bin
