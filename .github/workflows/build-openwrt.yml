@@ -51,7 +51,7 @@ jobs:
       id: organize
       run: |
         cd openwrt/bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}
-        echo "FIRMWARE::$PWD" >> $GITHUB_ENV
+        echo "FIRMWARE=$PWD" >> $GITHUB_ENV
 
     - name: Create Release
       id: create_release
