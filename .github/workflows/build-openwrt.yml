@@ -11,7 +11,7 @@ env:
   BOARD: "ramips"
   SUBTARGET: "mt7621"
   PROFILE: "xiaomi_redmi-router-ac2100"
-  PACKAGES: "luci -luci-proto-ppp wpad-wolfssl iperf3 ethtool mtr iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
+  PACKAGES: "luci -luci-proto-ppp wpad-wolfssl iperf3 ethtool mtr bind-dig iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
 
 jobs:
   build:
@@ -26,9 +26,6 @@ jobs:
       env:
         DEBIAN_FRONTEND: noninteractive
       run: |
-        #sudo -E apt-get -qq update
-        #sudo -E apt-get -qq autoremove --purge
-        #sudo -E apt-get -qq clean
         sudo mkdir -p /mnt/workdir
         sudo chown $USER:$GROUPS /mnt/workdir
 
@@ -42,7 +39,7 @@ jobs:
     - name: Download version info
       run: |
         curl -O "https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/version.buildinfo"
-        echo "::set-env name=OPENWRT_VERSION::$(cat version.buildinfo)"
+        echo "OPENWRT_VERSION=$(cat version.buildinfo)" >> $GITHUB_ENV
       
     - name: Build the image
       id: image
@@ -54,8 +51,7 @@ jobs:
       id: organize
       run: |
         cd openwrt/bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}
-        echo "::set-env name=FIRMWARE::$PWD"
-        echo "::set-output name=status::success"
+        echo "FIRMWARE::$PWD" >> $GITHUB_ENV
 
     - name: Create Release
       id: create_release
@@ -63,8 +59,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.OPENWRT_VERSION }}
-        release_name: OpenWrt ${{ env.OPENWRT_VERSION }}
+        tag_name: $OPENWRT_VERSION
+        release_name: OpenWrt $OPENWRT_VERSION
         body: |
           This release is based on ${{ env.OPENWRT_VERSION }} OpenWrt build with these packages ${{ env.PACKAGES }} for ${{ env.PROFILE }} routers.
         draft: false
@@ -77,6 +73,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: ${{ env.FIRMWARE }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
+        asset_path: $FIRMWARE/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
         asset_name: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
         asset_content_type: application/bin
