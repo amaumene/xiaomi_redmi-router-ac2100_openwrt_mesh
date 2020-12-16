@@ -44,7 +44,7 @@ jobs:
     - name: Download locally installed packages
       run : |
         mkdir -p openwrt/packages
-        cd packages
+        cd openwrt/packages
         curl -O -L $(curl https://api.github.com/repos/pymumu/smartdns/releases/latest | grep browser_ | grep mips-openwrt |cut -d\" -f4)
         curl -O -L $(curl https://api.github.com/repos/pymumu/smartdns/releases/latest | grep browser_ | grep luci-all |cut -d\" -f4)
       
