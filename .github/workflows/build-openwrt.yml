@@ -11,7 +11,7 @@ env:
   BOARD: "ramips"
   SUBTARGET: "mt7621"
   PROFILE: "xiaomi_redmi-router-ac2100"
-  PACKAGES: "luci-app-smartdns smartdns luci wpad-wolfssl iperf3 ethtool mtr knot-dig iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
+  PACKAGES: "shadowsocks-libev luci-app-shadowsocks luci-app-smartdns smartdns luci wpad-wolfssl iperf3 ethtool mtr knot-dig iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
 
 jobs:
   build:
@@ -47,7 +47,12 @@ jobs:
         cd openwrt/packages
         curl -O -L $(curl https://api.github.com/repos/pymumu/smartdns/releases/latest | grep browser_ | grep mips-openwrt |cut -d\" -f4)
         curl -O -L $(curl https://api.github.com/repos/pymumu/smartdns/releases/latest | grep browser_ | grep luci-all |cut -d\" -f4)
-      
+        
+    - name: add specific repository
+      run: |
+        echo "src/gz openwrt_dist http://openwrt-dist.sourceforge.net/packages/base/mipsel_24kc" >> openwrt/repositories.conf
+        echo "src/gz openwrt_dist_luci http://openwrt-dist.sourceforge.net/packages/luci" >> openwrt/repositories.conf
+        
     - name: Build the image
       id: image
       run: |
