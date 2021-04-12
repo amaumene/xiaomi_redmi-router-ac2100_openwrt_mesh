@@ -47,14 +47,14 @@ jobs:
       run: |
         cd openwrt
         make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE1 }}"
-        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin ../openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
+        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
 
     - name: Build the image of type 2
       id: type2
       run: |
         cd openwrt
         make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE2 }}"
-        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin ../openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
+        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
     
     - name: Create Release
       id: create_release
@@ -76,7 +76,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
+        asset_path: openwrt/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
         asset_name: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
         asset_content_type: application/bin
         
@@ -87,6 +87,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
+        asset_path: openwrt/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
         asset_name: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
         asset_content_type: application/bin
