@@ -11,7 +11,8 @@ env:
   BOARD: "ramips"
   SUBTARGET: "mt7621"
   PROFILE: "xiaomi_redmi-router-ac2100"
-  PACKAGES: "frps luci-app-frps iftop luci-proto-wireguard luci-app-wireguard luci-app-ttyd ttyd luci-app-shadowsocks-libev shadowsocks-libev-ss-server luci-app-nextdns nextdns luci wpad-mesh-wolfssl iperf3 mtr iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
+  PACKAGES_TYPE1: "frps luci-app-frps iftop luci-proto-wireguard luci-app-wireguard luci-app-ttyd ttyd luci-app-shadowsocks-libev shadowsocks-libev-ss-server luci-app-nextdns nextdns luci wpad-mesh-wolfssl iperf3 mtr iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
+  PACKAGES_TYPE2: "luci wpad-mesh-wolfssl iperf3 iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -dnsmasq -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
 
 jobs:
   build:
@@ -41,19 +42,20 @@ jobs:
         curl -O "https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/version.buildinfo"
         echo "OPENWRT_VERSION=$(cat version.buildinfo)" >> $GITHUB_ENV
         
-    - name: Download locally installed packages
-      run : |
-        mkdir -p openwrt/packages
-        cd openwrt/packages
-        curl -O -L $(curl https://api.github.com/repos/pymumu/smartdns/releases/latest | grep browser_ | grep mips-openwrt |cut -d\" -f4)
-        curl -O -L $(curl https://api.github.com/repos/pymumu/smartdns/releases/latest | grep browser_ | grep luci-all |cut -d\" -f4)
-        
-    - name: Build the image
-      id: image
+    - name: Build the image of type 1
+      id: type1
       run: |
         cd openwrt
-        make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES }}"
+        make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE1 }}"
+        mv openwrt/bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
 
+    - name: Build the image of type 2
+      id: type2
+      run: |
+        cd openwrt
+        make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE2 }}"
+        mv openwrt/bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
+    
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -63,17 +65,28 @@ jobs:
         tag_name: ${{ env.OPENWRT_VERSION }}
         release_name: OpenWrt ${{ env.OPENWRT_VERSION }}
         body: |
-          This release is based on ${{ env.OPENWRT_VERSION }} OpenWrt build with these packages ${{ env.PACKAGES }} for ${{ env.PROFILE }} router.
+          This release is based on OpenWrt snapshot ${{ env.OPENWRT_VERSION }}.
         draft: false
         prerelease: false
 
-    - name: Upload Release Asset
-      id: upload-release-asset 
+    - name: Upload type1 Asset
+      id: upload-release-asset-type1
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
-        asset_path: openwrt/bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
-        asset_name: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin
+        asset_path: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
+        asset_name: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
+        asset_content_type: application/bin
+        
+    - name: Upload type2 Asset
+      id: upload-release-asset-type2
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
+        asset_name: openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
         asset_content_type: application/bin
