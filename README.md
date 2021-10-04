@@ -1,7 +1,7 @@
 ![Build OpenWrt](https://github.com/amaumene/xiaomi_redmi-router-ac2100_openwrt_mesh/workflows/Build%20OpenWrt/badge.svg)
-# Latest stable OpenWrt image for [Xiaomi Redmi AC2100](https://xiaomi-mi.com/wifi-routers/redmi-ac2100-router/) 802.11s enabled
+# Latest OpenWrt image for [Xiaomi Redmi AC2100](https://xiaomi-mi.com/wifi-routers/redmi-ac2100-router/) 802.11s enabled
 
-This GitHub action is to build fresh images of latest OpenWrt stable using imagebuilder so I can automatically update my routers at home. 
+This GitHub action is to build fresh images of latest OpenWrt snapshot using imagebuilder so I can automatically update my routers at home. 
 
 As I have 3 routers with different roles, I generate an image for each kind.
 

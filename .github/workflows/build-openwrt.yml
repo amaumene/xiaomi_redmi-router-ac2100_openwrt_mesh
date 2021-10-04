@@ -30,44 +30,39 @@ jobs:
       run: |
         sudo mkdir -p /mnt/workdir
         sudo chown $USER:$GROUPS /mnt/workdir
-    
-    - name: Get latest stable version and today date
-      run: |
-        echo "TODAY_DATE=$(date +"%d-%m-%y")" >> $GITHUB_ENV 
-        echo "OPENWRT_VERSION=$(curl https://openwrt.org/releases/21.02/start | grep "Current Stable Release - OpenWrt" | sed "s/Current Stable Release - OpenWrt //" | sed "s/<strong>//" | sed "s/<\/strong>//")" >> $GITHUB_ENV
 
     - name: Download imagebuilder
       working-directory: /mnt/workdir
       run: |
-        curl -O "https://downloads.openwrt.org/releases/${{ env.OPENWRT_VERSION }}/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-imagebuilder-${{ env.OPENWRT_VERSION }}-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64.tar.xz"
-        tar xvaf openwrt-imagebuilder-${{ env.OPENWRT_VERSION }}-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64.tar.xz
-        ln -sf /mnt/workdir/openwrt-imagebuilder-${{ env.OPENWRT_VERSION }}-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64 $GITHUB_WORKSPACE/openwrt
+        curl -O "https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-imagebuilder-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64.tar.xz"
+        tar xvaf openwrt-imagebuilder-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64.tar.xz
+        ln -sf /mnt/workdir/openwrt-imagebuilder-${{ env.BOARD }}-${{ env.SUBTARGET }}.Linux-x86_64 $GITHUB_WORKSPACE/openwrt
  
-#     - name: Download version info
-#       run: |
-#         curl -O "https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/version.buildinfo"
-#         echo "OPENWRT_VERSION=$(cat version.buildinfo)" >> $GITHUB_ENV
+    - name: Download version info
+      run: |
+        curl -O "https://downloads.openwrt.org/snapshots/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/version.buildinfo"
+        echo "OPENWRT_VERSION=$(cat version.buildinfo)" >> $GITHUB_ENV
         
     - name: Build the image of type 1
       id: type1
       run: |
         cd openwrt
         make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE1 }}"
-        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-${{ env.OPENWRT_VERSION }}-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
+        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
 
     - name: Build the image of type 2
       id: type2
       run: |
         cd openwrt
         make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE2 }}"
-        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-${{ env.OPENWRT_VERSION }}-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
+        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type2.bin
 
     - name: Build the image of type 3
       id: type3
       run: |
         cd openwrt
         make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE3 }}"
-        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-${{ env.OPENWRT_VERSION }}-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type3.bin
+        mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type3.bin
       
     - name: Create Release
       id: create_release
@@ -75,10 +70,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.OPENWRT_VERSION }}-${{ env.TODAY_DATE }}
-        release_name: OpenWrt ${{ env.OPENWRT_VERSION }}-${{ env.TODAY_DATE }}
+        tag_name: ${{ env.OPENWRT_VERSION }}
+        release_name: OpenWrt ${{ env.OPENWRT_VERSION }}
         body: |
-          This release is based on OpenWrt ${{ env.OPENWRT_VERSION }} built on ${{ env.TODAY_DATE }}.
+          This release is based on OpenWrt snapshot ${{ env.OPENWRT_VERSION }}.
           
           Type1 is built with these packages: "${{ env.PACKAGES_TYPE1 }}"
           
