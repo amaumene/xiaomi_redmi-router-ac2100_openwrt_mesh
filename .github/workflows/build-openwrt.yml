@@ -33,7 +33,7 @@ jobs:
     
     - name: Get latest stable version and today date
       run: |
-        echo "TODAY_DATE=$(date +"%d-%m-%y)" >> $GITHUB_ENV 
+        echo "TODAY_DATE=$(date +"%d-%m-%y")" >> $GITHUB_ENV 
         echo "OPENWRT_VERSION=$(curl https://openwrt.org/releases/21.02/start | grep "Current Stable Release - OpenWrt" | sed "s/Current Stable Release - OpenWrt //" | sed "s/<strong>//" | sed "s/<\/strong>//")" >> $GITHUB_ENV
 
     - name: Download imagebuilder
