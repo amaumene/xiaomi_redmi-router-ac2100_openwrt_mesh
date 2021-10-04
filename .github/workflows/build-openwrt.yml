@@ -52,6 +52,7 @@ jobs:
       run: |
         cd openwrt
         make image PROFILE="${{ env.PROFILE }}" PACKAGES="${{ env.PACKAGES_TYPE1 }}"
+        ls -lahR bin
         mv bin/targets/${{ env.BOARD }}/${{ env.SUBTARGET }}/openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade.bin openwrt-ramips-mt7621-xiaomi_redmi-router-ac2100-squashfs-sysupgrade-type1.bin
 
     - name: Build the image of type 2
