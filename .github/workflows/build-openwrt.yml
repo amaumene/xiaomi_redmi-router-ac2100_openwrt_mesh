@@ -31,8 +31,9 @@ jobs:
         sudo mkdir -p /mnt/workdir
         sudo chown $USER:$GROUPS /mnt/workdir
     
-    - name: Get latest stable version
+    - name: Get latest stable version and today date
       run: |
+        echo "TODAY_DATE=$(date +"%d-%m-%y)" >> $GITHUB_ENV 
         echo "OPENWRT_VERSION=$(curl https://openwrt.org/releases/21.02/start | grep "Current Stable Release - OpenWrt" | sed "s/Current Stable Release - OpenWrt //" | sed "s/<strong>//" | sed "s/<\/strong>//")" >> $GITHUB_ENV
 
     - name: Download imagebuilder
@@ -74,10 +75,10 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        tag_name: ${{ env.OPENWRT_VERSION }}
-        release_name: OpenWrt ${{ env.OPENWRT_VERSION }}
+        tag_name: ${{ env.OPENWRT_VERSION }}-${{ env.TODAY_DATE }}
+        release_name: OpenWrt ${{ env.OPENWRT_VERSION }}-${{ env.TODAY_DATE }}
         body: |
-          This release is based on OpenWrt snapshot ${{ env.OPENWRT_VERSION }}.
+          This release is based on OpenWrt ${{ env.OPENWRT_VERSION }} built on ${{ env.TODAY_DATE }}.
           
           Type1 is built with these packages: "${{ env.PACKAGES_TYPE1 }}"
           
