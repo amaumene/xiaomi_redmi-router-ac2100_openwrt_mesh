@@ -11,7 +11,7 @@ env:
   BOARD: "ramips"
   SUBTARGET: "mt7621"
   PROFILE: "xiaomi_redmi-router-ac2100"
-  PACKAGES_TYPE1: "luci-app-yggdrasil yggdrasil luci wpad-mesh-wolfssl iperf3 mtr iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
+  PACKAGES_TYPE1: "ds-lite luci-app-yggdrasil yggdrasil luci wpad-mesh-wolfssl iperf3 mtr iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
   PACKAGES_TYPE2: "frps luci-app-frps luci-app-ttyd ttyd luci-app-shadowsocks-libev shadowsocks-libev-ss-server luci wpad-mesh-wolfssl iperf3 iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -odhcpd-ipv6only -dnsmasq -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
   PACKAGES_TYPE3: "luci wpad-mesh-wolfssl iperf3 iwinfo kmod-tcp-bbr kmod-mtd-rw libustream-wolfssl ca-bundle -odhcpd-ipv6only -dnsmasq -luci-proto-ppp -ppp -ppp-mod-pppoe -kmod-pppox -kmod-pppoe -kmod-ppp -wpad-basic-wolfssl"
 
